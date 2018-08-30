@@ -5,8 +5,24 @@ import Books from './Books'
 import * as BooksAPI from './utils/BooksAPI'
 
 class Search extends Component {
-  searchBook(query) {
-    
+
+  state = {
+    books: []
+  }
+
+  search(query) {
+    if (!query) return;
+    debounce.search()(debounce, () => {
+      BooksAPI.search(query).then(books => {
+        books = books.error ? [] : books
+        this.setState({books})
+      })
+    })
+  }
+
+  getBooks() {
+    let books = this.state.books
+    return books.length ? books : this.props.books
   }
 
   render() {
@@ -21,13 +37,13 @@ class Search extends Component {
             <input
               type="text"
               placeholder="Search by title or author"
-              onChange={(event) => this.searchBook(event.target.value)} />
+              onChange={(event) => this.search(event.target.value)} />
           </div>
         </div>
         <div className="search-books-results">
           <Books
-            onBookShelf={this.props.onBookShelf}
-            books={this.props.books} />
+            updateBook={this.props.updateBook}
+            books={this.getBooks()} />
         </div>
       </div>
     )

@@ -1,12 +1,14 @@
-export const debounce = (delay, callback) => {
-  let timeout
-  return () => {
-    let that = this, args = arguments,
-      delayed = () => {
-        callback.apply(that, args);
-        timeout = null;
-      }
-    timeout && clearTimeout(timeout);
-    timeout = setTimeout(delayed, delay || 250);
+export const debounce = {
+  timeout: null,
+  delay: 1000,
+  search: () => {
+    return (self, cb) => {
+      self.timeout && clearTimeout(self.timeout);
+      self.timeout = setTimeout(self.delayed.bind(null, self, cb), self.delay)
+    }
+  },
+  delayed: (self, cb) => {
+    cb.apply(self)
+    self.timeout = null
   }
 }

@@ -18,25 +18,17 @@ class App extends Component {
     })
   }
 
-  onBookShelf(shelf, book) {
-    const indexFound = this.state.books
-    .map(book => book.id)
-    .indexOf(book.id)
-
-    if (indexFound != -1) {
-      this.state.books[indexFound].shelf = shelf
-      let books = this.state.books
+  updateBook(book) {
+    let books = this.state.books,
+        bookIndex = books.map(v => v.id).indexOf(book.id)
+    if (bookIndex >= 0) {
+      books[bookIndex] = book
       this.setState({books})
     } else {
-      BooksAPI.get(book.id).then( response => {
-        response.shelf = shelf
-        let books = this.state.books
-        books.concat(response);
-        this.setState({books})
-      })
+      books = books.concat(book)
+      this.setState({books})
     }
-
-    BooksAPI.update(book, shelf);
+    BooksAPI.update(book, book.shelf)
   }
 
   render() {
@@ -50,15 +42,15 @@ class App extends Component {
             <div className="list-books-content">
                <div>
                 <Shelf
-                  onBookShelf={this.onBookShelf.bind(this)}
+                  updateBook={this.updateBook.bind(this)}
                   books={this.state.books.filter(book => book.shelf === `currentlyReading`)}
                   title="Currently Reading" />
                 <Shelf
-                  onBookShelf={this.onBookShelf.bind(this)}
+                  updateBook={this.updateBook.bind(this)}
                   books={this.state.books.filter(book => book.shelf === `wantToRead`)}
                   title="Want to Read" />
                 <Shelf
-                  onBookShelf={this.onBookShelf.bind(this)}
+                  updateBook={this.updateBook.bind(this)}
                   books={this.state.books.filter(book => book.shelf === `read`)}
                   title="Read" />
                </div>
@@ -73,7 +65,7 @@ class App extends Component {
         )}/>
         <Route path='/search' render={({ history }) => (
           <Search
-            onBookShelf={this.onBookShelf.bind(this)}
+            updateBook={this.updateBook.bind(this)}
             books={this.state.books} />
         )}/>
       </div>

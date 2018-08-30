@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 
 class Books extends Component {
+
   state = {
     options: [
       { name: `Currently Reading` , value: `currentlyReading`},
@@ -11,14 +12,15 @@ class Books extends Component {
   }
 
   handleShelf(shelf, book) {
-    this.props.onBookShelf(shelf, book);
+    book.shelf = shelf
+    this.props.updateBook(book)
   }
 
   render() {
     return (
         <ol className="books-grid">
-          {this.props.books.map(book => (
-            <li key={book.id}>
+          {this.props.books.map((book, key) => (
+            <li key={key}>
               <div className="book">
                 <div className="book-top">
                   <div className="book-cover"
