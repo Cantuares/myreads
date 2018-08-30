@@ -1,4 +1,4 @@
-# MyReads Project
+# MyReads: A Book Tracking App
 
 This is a project that organize your books, you can add book in some shelves like currently reading, read and want to read.
 
