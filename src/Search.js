@@ -16,9 +16,10 @@ class Search extends Component {
       if (!query.length) throw Error(`empty field`)
       debounce.search()(debounce, () => {
         BooksAPI.search(query).then(books => {
-          if (books.error) throw books.error
           books.map(book => book.shelf = `none`)
           this.setState({books, error: false})
+        }).catch(err => {
+          this.setState({error: true})
         })
       })
     } catch (err) {
@@ -29,16 +30,20 @@ class Search extends Component {
   getBooks() {
     const books = this.state.books,
           booksIds = this.props.books.map(book => book.id)
+
     books.map(book => {
       const index = booksIds.indexOf(book.id)
       if (index !== -1) book.shelf = this.props.books[index].shelf
       return book
     })
+
     return books.length
     ? this.state.error
       ? []
       : books
-    : this.props.books
+    : this.state.error
+      ? []
+      : this.props.books
   }
 
   render() {
