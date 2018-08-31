@@ -1,66 +1,35 @@
 import React, { Component } from 'react'
+import { Link } from 'react-router-dom'
+import { shelfOptions } from './utils/Utils'
+import Shelf from './Shelf'
 
 class Books extends Component {
-
-  state = {
-    options: [
-      { name: `Currently Reading` , value: `currentlyReading`},
-      { name: `Want to Read` , value: `wantToRead`},
-      { name: `Read` , value: `read`},
-      { name: `None` , value: `none`},
-    ]
-  }
-
-  handleShelf(shelf, book) {
-    book.shelf = shelf
-    this.props.updateBook(book)
-  }
-
   render() {
     return (
-        <ol className="books-grid">
-          {this.props.books.map((book, key) => (
-            <li key={key}>
-              <div className="book">
-                <div className="book-top">
-                  <div className="book-cover"
-                    style={{
-                      backgroundImage: `url(${
-                        book.imageLinks ?
-                        book.imageLinks.smallThumbnail :
-                        ``
-                      })`
-                    }}>
-                  </div>
-                  <div className="book-shelf-changer">
-                    <select
-                      value={
-                        book.shelf ?
-                        book.shelf :
-                        `none`
-                      }
-                      onChange={
-                        event => this.handleShelf(event.target.value, book)
-                      }>
-                      <option value="move" disabled>Move to...</option>
-                      {this.state.options.map((option, key) => (
-                        <option key={key} value={option.value}>
-                          {option.name}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-                <div className="book-title">{book.title}</div>
-                <div className="book-authors">
-                  { book.authors ?
-                    book.authors.join(', ') :
-                    book.authors }
-                </div>
-              </div>
-            </li>
-          ))}
-        </ol>
+      <div className="list-books">
+        <div className="list-books-title">
+          <h1>MyReads</h1>
+        </div>
+        <div className="list-books-content">
+           <div>
+           {
+             shelfOptions.filter(o => o.value !== 'none').map((o, key) => (
+             <Shelf
+              key={key}
+              updateBook={this.props.updateBook}
+              books={this.props.books.filter(book => book.shelf === o.value)}
+              title={o.title} />
+             ))
+          }
+           </div>
+        </div>
+        <div className="open-search">
+          <Link
+            to='/search'
+            className='open-search'
+          >Add a book</Link>
+        </div>
+      </div>
     )
   }
 }
